@@ -4,6 +4,7 @@ const {
   getServices,
   createService,
   updateService,
+  deleteService
 } = require("../../controller/services.controller");
 const imageUpload = require("../../middleware/mediaUploads");
 
@@ -22,11 +23,17 @@ router.route("/services").post(
   createService
 );
 
-router.route("/services/:id").patch(isAuthenticated, updateService);
+router.route("/services/:id").patch(
+  isAuthenticated,
+  imageUpload.fields([
+    {
+      name: "image",
+      maxCount: 5,
+    },
+  ]),
+  updateService
+);
 
-router.route("/services/:id").delete((req, res) => {
-  // Handle deleting a service logic here
-  res.send(`Delete Service with ID: ${req.params.id}`);
-});
+router.route("/services/:id").delete(isAuthenticated, deleteService);
 
 module.exports = router;

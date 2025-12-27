@@ -1,3 +1,4 @@
+
 const Admin = require("../model/admin.model");
 const { sendToken } = require("../utils/jwtToken");
 
@@ -64,3 +65,16 @@ exports.loginAdmin = async (req, res) => {
   }
 };
 
+exports.logoutAdmin = async (req, res) => {
+  try {
+    res.cookie(process.env.TOKEN_NAME, null, {
+      expires: new Date(Date.now()),
+      httpOnly: true,
+    });
+    res.status(200).json({ message: "Admin logged out successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error logging out admin", error: error.message });
+  }
+};

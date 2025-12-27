@@ -21,7 +21,6 @@ var corsOptions = {
   optionsSuccessStatus: 200,
 };
 
-
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -31,17 +30,8 @@ app.use("/media", express.static("files/media"));
 
 const authRouter = require("./router/authRouter/auth.router");
 const serviceRouter = require("./router/servicesRouter/services.router");
+const faqRouter = require("./router/faqRouter/faq.router");
 
-app.use("/", authRouter,serviceRouter);
-
-
-
-
-
-
-
-
-
-
+app.use("/", authRouter, serviceRouter, faqRouter);
 
 module.exports = app;

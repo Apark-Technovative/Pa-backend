@@ -4,13 +4,15 @@ const {
   getServices,
   createService,
   updateService,
-  deleteService
+  deleteService,
+  getService
 } = require("../../controller/services.controller");
 const imageUpload = require("../../middleware/mediaUploads");
 
 const router = express.Router();
 
 router.route("/services").get(isAuthenticated, getServices);
+router.route("/getServices").get( getServices);
 
 router.route("/services").post(
   isAuthenticated,
@@ -22,6 +24,7 @@ router.route("/services").post(
   ]),
   createService
 );
+router.route("/services/:id").get(isAuthenticated, getService);
 
 router.route("/services/:id").patch(
   isAuthenticated,

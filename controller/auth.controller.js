@@ -30,8 +30,6 @@ exports.createAdmin = async (req, res) => {
 
 exports.loginAdmin = async (req, res) => {
   try {
-    console.log(req.body);
-    
     const { email, password } = req.body;
     if (!email) {
       return res.status(400).json({
@@ -65,3 +63,4 @@ exports.loginAdmin = async (req, res) => {
       .json({ message: "Error logging in admin", error: error.message });
   }
 };
+

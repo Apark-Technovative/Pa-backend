@@ -1,5 +1,6 @@
 const Services = require("../model/services.model");
 const fs = require("fs-extra");
+
 exports.getServices = async (req, res) => {
   try {
     const services = await Services.find();
@@ -10,6 +11,23 @@ exports.getServices = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error fetching services", error: error.message });
+  }
+};
+
+exports.getService = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const service = await Services.findById(id);
+    if (!service) {
+      return res.status(404).json({ message: "Service not found" });
+    }
+    res
+      .status(200)
+      .json({ message: "Service fetched successfully", data: service });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching service", error: error.message });
   }
 };
 

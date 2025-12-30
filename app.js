@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use("/media", express.static("files/media"));
+app.use("/media", express.static("uploads"));
 
 const authRouter = require("./router/authRouter/auth.router");
 const serviceRouter = require("./router/servicesRouter/services.router");

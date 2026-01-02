@@ -78,10 +78,8 @@ exports.createService = async (req, res) => {
 exports.updateService = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
 
     const { title, description, tag, status } = req.body || {};
-    console.log(req.body);
 
     const service = await Services.findById(id);
 

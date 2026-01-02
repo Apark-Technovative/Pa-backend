@@ -31,7 +31,9 @@ app.use("/media", express.static("uploads"));
 const authRouter = require("./router/authRouter/auth.router");
 const serviceRouter = require("./router/servicesRouter/services.router");
 const faqRouter = require("./router/faqRouter/faq.router");
+const contactRouter = require("./router/contactRouter/contact.router");
+const careerRouter = require("./router/CareerRouter/career.router");
 
-app.use("/", authRouter, serviceRouter, faqRouter);
+app.use("/", authRouter, serviceRouter, faqRouter, contactRouter, careerRouter);
 
 module.exports = app;

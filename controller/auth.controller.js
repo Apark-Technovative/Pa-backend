@@ -1,4 +1,3 @@
-
 const Admin = require("../model/admin.model");
 const { sendToken } = require("../utils/jwtToken");
 
@@ -26,6 +25,19 @@ exports.createAdmin = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error creating admin", error: error.message });
+  }
+};
+
+exports.getAdmin = async (req, res) => {
+  try {
+    const admin = await Admin.findById(req.admin.id);
+    res.status(200).json({
+      admin: admin,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error getting admin details", error: error.message });
   }
 };
 

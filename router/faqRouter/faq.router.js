@@ -12,6 +12,7 @@ const router = express.Router();
 
 
 router.route("/faqs").get(isAuthenticated, getFaqs);
+router.route("/Faqs").get(isAuthenticated,getFaqs);
 router.route("/getFaqs").get(getFaqs);
 router.route("/faqs").post(isAuthenticated, createFaq);
 router.route("/faqs/:id").patch(isAuthenticated, updateFaq);

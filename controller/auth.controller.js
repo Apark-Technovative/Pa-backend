@@ -32,7 +32,8 @@ exports.getAdmin = async (req, res) => {
   try {
     const admin = await Admin.findById(req.admin.id);
     res.status(200).json({
-      admin: admin,
+      message: "Admin detail retrived",
+      data: admin,
     });
   } catch (error) {
     res

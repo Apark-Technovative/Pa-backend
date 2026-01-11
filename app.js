@@ -33,7 +33,16 @@ const serviceRouter = require("./router/servicesRouter/services.router");
 const faqRouter = require("./router/faqRouter/faq.router");
 const contactRouter = require("./router/contactRouter/contact.router");
 const careerRouter = require("./router/CareerRouter/career.router");
+const quoteRouter = require("./router/quoteRouter/quote.router");
 
-app.use("/", authRouter, serviceRouter, faqRouter, contactRouter, careerRouter);
+app.use(
+  "/",
+  authRouter,
+  serviceRouter,
+  faqRouter,
+  contactRouter,
+  careerRouter,
+  quoteRouter
+);
 
 module.exports = app;

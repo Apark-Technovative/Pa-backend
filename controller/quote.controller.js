@@ -5,7 +5,7 @@ const path = require("path");
 
 exports.sendQuote = async (req, res) => {
   try {
-    const { title, type1, type2, price } = req.body;
+    const { title, type1, type2, price,email } = req.body;
     const filePath = path.join(__dirname, "../mailContent/quote.html");
 
     var html = await fs.readFile(filePath, "utf-8");
@@ -27,6 +27,7 @@ exports.sendQuote = async (req, res) => {
         type1: type1 ? type1 : "",
         type2: type2 ? type2 : "",
         price: price,
+        email
       });
       res.status(200).json({ message: "Quote sent successfully" });
     } else {

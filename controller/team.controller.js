@@ -5,6 +5,8 @@ exports.addTeam = async (req, res) => {
   try {
     const { name, position, description,status } = req.body;
     const image = req.files;
+    console.log(image);
+    
 
     if ((!name, !position, !description, !image)) {
       return res.status(400).json({ message: "All fields are required" });

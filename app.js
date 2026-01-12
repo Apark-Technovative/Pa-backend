@@ -34,6 +34,7 @@ const faqRouter = require("./router/faqRouter/faq.router");
 const contactRouter = require("./router/contactRouter/contact.router");
 const careerRouter = require("./router/CareerRouter/career.router");
 const quoteRouter = require("./router/quoteRouter/quote.router");
+const teamRouter = require("./router/teamRouter/team.router");
 
 app.use(
   "/",
@@ -42,7 +43,8 @@ app.use(
   faqRouter,
   contactRouter,
   careerRouter,
-  quoteRouter
+  quoteRouter,
+  teamRouter
 );
 
 module.exports = app;

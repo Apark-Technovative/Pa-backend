@@ -22,7 +22,17 @@ exports.sendQuote = async (req, res) => {
       html: html,
     });
     if (info.messageId) {
+      const quote = await Quote.create({
+        title: title,
+        type1: type1 ? type1 : "",
+        type2: type2 ? type2 : "",
+        price: price,
+      });
       res.status(200).json({ message: "Quote sent successfully" });
+    } else {
+      res.status(400).json({
+        message: "Error sending Quote",
+      });
     }
   } catch (error) {
     res

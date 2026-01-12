@@ -21,10 +21,12 @@ const serviceSchema = new mongoose.Schema(
       enum: ["active", "inactive"],
       default: "active",
     },
-    image: [{
-      type: String,
-      required: [true, "Please enter service image"],
-    }],
+    image: [
+      {
+        type: String,
+        required: [true, "Please upload service image"],
+      },
+    ],
   },
   { timestamps: true }
 );

@@ -3,7 +3,7 @@ const fs = require("fs-extra");
 
 exports.addTeam = async (req, res) => {
   try {
-    const { name, position, description } = req.body;
+    const { name, position, description,status } = req.body;
     const image = req.files;
 
     if ((!name, !position, !description, !image)) {
@@ -23,6 +23,7 @@ exports.addTeam = async (req, res) => {
       position,
       description,
       image: images,
+      status
     });
     res
       .status(201)
@@ -63,7 +64,7 @@ exports.getAllTeam = async (req, res) => {
 exports.updateTeam = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, position, description } = req.body || {};
+    const { name, position, description,status } = req.body || {};
     const team = await Team.findById(id);
     if (!team) {
       return res.status(404).json({ message: "Team not found" });
@@ -95,6 +96,7 @@ exports.updateTeam = async (req, res) => {
     team.name = name ?? team.name;
     team.description = description ?? team.description;
     team.position = position ?? team.position;
+    team.status = status ?? team.status;
 
     team.image = images;
     const updatedTeam = await team.save();

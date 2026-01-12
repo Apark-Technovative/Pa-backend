@@ -17,6 +17,11 @@ const teamSchema = new mongoose.Schema(
       required: [true, "Description is required"],
       trim: true,
     },
+    status: {
+      type: String,
+      default: "active",
+      enum: ["active", "inactive"],
+    },
     image: [
       {
         type: String,
@@ -27,4 +32,4 @@ const teamSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Team", teamSchema)
+module.exports = mongoose.model("Team", teamSchema);

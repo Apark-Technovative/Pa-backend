@@ -3,7 +3,7 @@ const { sendToken } = require("../utils/jwtToken");
 
 exports.createAdmin = async (req, res) => {
   try {
-    const { email, password, confirmPassword } = req.body;
+    const { email, name, password, confirmPassword } = req.body;
 
     const adminExists = await Admin.findOne({ email });
     if (adminExists) {
@@ -16,7 +16,7 @@ exports.createAdmin = async (req, res) => {
       return res.status(400).json({ message: "Passwords do not match" });
     }
 
-    const newAdmin = await Admin.create({ email, password });
+    const newAdmin = await Admin.create({ email, password, name });
 
     res
       .status(201)

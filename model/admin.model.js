@@ -3,13 +3,17 @@ const bcrypt = require("bcryptjs");
 
 const adminSchema = new mongoose.Schema(
   {
-
     email: {
       type: String,
       required: [true, "Please enter your email"],
       unique: [true, "Email already exists"],
       trim: true,
       lowercase: true,
+    },
+    name: {
+      type: String,
+      required: [true, "Please enter your name"],
+      trim: true,
     },
     password: {
       type: String,
@@ -33,7 +37,6 @@ adminSchema.pre("save", async function (next) {
   }
   this.password = bcrypt.hashSync(this.password, 14);
 });
-
 
 adminSchema.methods.encryptPassword = async function (password) {
   console.log("aaa", password);

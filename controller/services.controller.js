@@ -1,5 +1,7 @@
 const Services = require("../model/services.model");
 const fs = require("fs-extra");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("../config/cloudinaryConfig");
 
 exports.getServices = async (req, res) => {
   try {
@@ -88,29 +90,28 @@ exports.updateService = async (req, res) => {
     }
 
     let images = [...service.image];
+    var toRemove = req.body?.removedImage;
 
-    let serviceImages = service.image;
-    if (req.body?.removedImage) {
-      let removeImage = req.body.removedImage;
-
-      removeImage.forEach((element) => {
-        serviceImages.forEach((items, index) => {
-          if (element === items) {
-            const imagePath = `./uploads/${element}`;
-            console.log(imagePath);
-
-            fs.remove(imagePath);
-            images.splice(index, 1);
-          }
-        });
-      });
+    if (toRemove && !Array.isArray(toRemove)) {
+      toRemove = ["None/none", toRemove];
     }
 
-    if (req.files?.image) {
-      req.files.image.forEach((file) => {
-        images.push(file.filename);
-      });
+    if (toRemove && Array.isArray(toRemove)) {
+      await Promise.all(
+        toRemove.map(async (pid) => {
+          cloudinary.uploader.destroy(pid);
+        })
+      );
+      images = images.filter((img) => !toRemove.includes(img));
     }
+
+
+    if(req.files && req.files.image){
+      const updatedImages = req.files.image.map((file)=>file.filename)
+      images = [...images,...updatedImages]
+    }
+    
+
 
     service.title = title ?? service.title;
     service.description = description ?? service.description;
@@ -140,10 +141,17 @@ exports.deleteService = async (req, res) => {
       return res.status(404).json({ message: "Service not found" });
     }
     // Remove associated images from the file system
-    service.image.forEach((img) => {
-      const imagePath = `./uploads/${img}`;
-      fs.remove(imagePath);
-    });
+    // service.image.forEach((img) => {
+    //   const imagePath = `./uploads/${img}`;
+    //   fs.remove(imagePath);
+    // });
+
+    if (service.image && service.image.length > 0) {
+      for (const image of service.image) {
+        const pid = image.split(".")[0];
+        const res = await cloudinary.uploader.destroy(pid);
+      }
+    }
 
     await Services.findByIdAndDelete(id);
     res.status(200).json({ message: "Service deleted successfully" });

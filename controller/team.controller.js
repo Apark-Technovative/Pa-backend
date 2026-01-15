@@ -1,5 +1,7 @@
 const Team = require("../model/team.model");
 const fs = require("fs-extra");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("../config/cloudinaryConfig");
 
 exports.addTeam = async (req, res) => {
   try {
@@ -73,27 +75,27 @@ exports.updateTeam = async (req, res) => {
     }
 
     let images = [...team.image];
-    let teamImages = team.image;
-    if (req.body?.removedImage) {
-      let removeImage = req.body.removedImage;
+    var toRemove = req.body?.removedImage
 
-      removeImage.forEach((element) => {
-        teamImages.forEach((items, index) => {
-          if (element === items) {
-            const imagePath = `./uploads/${element}`;
-            console.log(imagePath);
+    if (toRemove && !Array.isArray(toRemove)) {
+      toRemove = ["None/none", toRemove];
+    }
 
-            fs.remove(imagePath);
-            images.splice(index, 1);
-          }
-        });
-      });
+    if (toRemove && Array.isArray(toRemove)) {
+      await Promise.all(
+        toRemove.map(async (pid) => {
+          cloudinary.uploader.destroy(pid);
+        })
+      );
+      images = images.filter((img) => !toRemove.includes(img));
     }
-    if (req.files?.image) {
-      req.files.image.forEach((file) => {
-        images.push(file.filename);
-      });
+
+
+    if(req.files && req.files.image){
+      const updatedImages = req.files.image.map((file)=>file.filename)
+      images = [...images,...updatedImages]
     }
+    
 
     team.name = name ?? team.name;
     team.description = description ?? team.description;
@@ -123,10 +125,17 @@ exports.deleteTeam = async (req, res) => {
       return res.status(404).json({ message: "Team not found" });
     }
     // Remove associated images from the file system
-    team.image.forEach((img) => {
-      const imagePath = `./uploads/${img}`;
-      fs.remove(imagePath);
-    });
+    // team.image.forEach((img) => {
+    //   const imagePath = `./uploads/${img}`;
+    //   fs.remove(imagePath);
+    // });
+
+     if (team.image && team.image.length > 0) {
+          for (const image of team.image) {
+            const pid = image.split(".")[0];
+            const res = await cloudinary.uploader.destroy(pid);
+          }
+        }
 
     await Team.findByIdAndDelete(id);
     res.status(200).json({ message: "Team deleted successfully" });

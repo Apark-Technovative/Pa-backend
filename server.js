@@ -6,7 +6,7 @@ process.on('uncaughtException', (err) => {
   console.error('Shutting down the server due to Uncaught Exception');
   process.exit(1);
 });
-require('dotenv').config({ path: 'config/config.env' });
+require('dotenv').config({ path: '.env' });
 
 connectDatabase();
 

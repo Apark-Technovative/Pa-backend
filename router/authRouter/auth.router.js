@@ -5,6 +5,8 @@ const {
   loginAdmin,
   getAdmin,
   logoutAdmin,
+  changeMyPassword,
+  changePassword,
 } = require("../../controller/auth.controller");
 const { isAuthenticated } = require("../../middleware/isAuthenticated");
 
@@ -13,7 +15,10 @@ const router = express.Router();
 router.route("/login").post(loginAdmin);
 router.route("/getAdmin").get(isAuthenticated, getAdmin);
 
-router.route("/register").post(createAdmin);
+router.route("/register").post(isAuthenticated, createAdmin);
+router.route("/registerSuperAdmin").post(createAdmin);
+router.route("/changeMyPassword").post(isAuthenticated, changeMyPassword);
+router.route("/changePassword/:id").post(isAuthenticated, changePassword);
 
 router.route("/logout").post(isAuthenticated, logoutAdmin);
 

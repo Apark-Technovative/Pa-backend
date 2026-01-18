@@ -3,9 +3,12 @@ const { sendToken } = require("../utils/jwtToken");
 
 exports.createAdmin = async (req, res) => {
   try {
-    const { email, name, password, confirmPassword } = req.body;
+    const { email, name, password, confirmPassword, role } = req.body;
 
     const adminExists = await Admin.findOne({ email });
+    if (!email || !name || !password) {
+      return res.status(400).json({ message: "Please fill all the fields" });
+    }
     if (adminExists) {
       return res
         .status(400)
@@ -16,7 +19,7 @@ exports.createAdmin = async (req, res) => {
       return res.status(400).json({ message: "Passwords do not match" });
     }
 
-    const newAdmin = await Admin.create({ email, password, name });
+    const newAdmin = await Admin.create({ email, password, name, role });
 
     res
       .status(201)
@@ -89,5 +92,64 @@ exports.logoutAdmin = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error logging out admin", error: error.message });
+  }
+};
+
+exports.changeMyPassword = async (req, res) => {
+  try {
+    const id = req.admin.id;
+    const admin = await Admin.findById(id).select("+password");
+    console.log(admin);
+    const { password, newPassword, confirmPassword } = req.body;
+    if (admin.password) {
+      if (!(await admin.comparePassword(password))) {
+        return res.status(400).json({
+          message: "Old Password is incorrect",
+        });
+      }
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({
+        message: "Passwords do not match",
+      });
+    }
+
+    admin.password = newPassword;
+    await admin.save();
+
+    sendToken(admin, 200, "Your password have been changed", res, req);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error changing password", error: error.message });
+  }
+};
+
+exports.changePassword = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const admin = await Admin.findById(id).select("+password");
+    const { newPassword, confirmPassword } = req.body;
+    if (!admin) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({
+        message: "Passwords do not match",
+      });
+    }
+    admin.password = newPassword;
+    await admin.save();
+    res.status(200).json({
+      message: "Your password have been changed",
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error changing password", error: error.message });
   }
 };

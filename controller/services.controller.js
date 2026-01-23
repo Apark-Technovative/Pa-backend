@@ -1,14 +1,26 @@
-const Services = require("../model/services.model");
+const Service = require("../model/services.model");
 const fs = require("fs-extra");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("../config/cloudinaryConfig");
+const ApiFeatures = require("../utils/apiFeatures");
 
 exports.getServices = async (req, res) => {
   try {
-    const services = await Services.find();
-    res
-      .status(200)
-      .json({ message: "Services fetched successfully", data: services });
+    // const services = await Service.find();
+    const apiFeatures = new ApiFeatures(Service.find(), req.query)
+      .filter()
+      .sort()
+      .pagination();
+
+
+    const services = await apiFeatures.query;
+    console.log("services", services);
+    const count = services.length;
+    res.status(200).json({
+      message: "Services fetched successfully",
+      count: count,
+      data: services,
+    });
   } catch (error) {
     res
       .status(500)
@@ -19,7 +31,7 @@ exports.getServices = async (req, res) => {
 exports.getService = async (req, res) => {
   try {
     const { id } = req.params;
-    const service = await Services.findById(id);
+    const service = await Service.findById(id);
     if (!service) {
       return res.status(404).json({ message: "Service not found" });
     }
@@ -59,7 +71,7 @@ exports.createService = async (req, res) => {
     });
 
     console.log("Images Array:", images);
-    const newService = await Services.create({
+    const newService = await Service.create({
       title,
       description,
       tag,
@@ -83,7 +95,7 @@ exports.updateService = async (req, res) => {
 
     const { title, description, tag, status } = req.body || {};
 
-    const service = await Services.findById(id);
+    const service = await Service.findById(id);
 
     if (!service) {
       return res.status(404).json({ message: "Service not found" });
@@ -100,18 +112,15 @@ exports.updateService = async (req, res) => {
       await Promise.all(
         toRemove.map(async (pid) => {
           cloudinary.uploader.destroy(pid);
-        })
+        }),
       );
       images = images.filter((img) => !toRemove.includes(img));
     }
 
-
-    if(req.files && req.files.image){
-      const updatedImages = req.files.image.map((file)=>file.filename)
-      images = [...images,...updatedImages]
+    if (req.files && req.files.image) {
+      const updatedImages = req.files.image.map((file) => file.filename);
+      images = [...images, ...updatedImages];
     }
-    
-
 
     service.title = title ?? service.title;
     service.description = description ?? service.description;
@@ -135,7 +144,7 @@ exports.updateService = async (req, res) => {
 exports.deleteService = async (req, res) => {
   try {
     const { id } = req.params;
-    const service = await Services.findById(id);
+    const service = await Service.findById(id);
 
     if (!service) {
       return res.status(404).json({ message: "Service not found" });
@@ -153,7 +162,7 @@ exports.deleteService = async (req, res) => {
       }
     }
 
-    await Services.findByIdAndDelete(id);
+    await Service.findByIdAndDelete(id);
     res.status(200).json({ message: "Service deleted successfully" });
   } catch (error) {
     res

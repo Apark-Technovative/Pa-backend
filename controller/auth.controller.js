@@ -45,6 +45,22 @@ exports.getAdmin = async (req, res) => {
   }
 };
 
+exports.getAdmins = async (req, res) => {
+  try {
+    var admins = await Admin.find();
+    admins = admins.filter((admin) => admin.role !== "superAdmin");
+    res.status(200).json({
+      message: "Admins retrived",
+      data: admins,
+    });
+  }
+  catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error getting admins", error: error.message });
+  }
+};
+
 exports.loginAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;

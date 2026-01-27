@@ -25,7 +25,7 @@ const teamSchema = new mongoose.Schema(
     image: [
       {
         type: String,
-        required: [true, "Please upload team member image"],
+        // required: [true, "Please upload team member image"],
       },
     ],
   },

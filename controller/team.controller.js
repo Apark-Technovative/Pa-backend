@@ -5,29 +5,30 @@ const cloudinary = require("../config/cloudinaryConfig");
 
 exports.addTeam = async (req, res) => {
   try {
-    const { name, position, description,status } = req.body;
+    const { name, position, description, status } = req.body;
     const image = req.files;
     console.log(image);
-    
 
-    if ((!name, !position, !description, !image)) {
+    if ((!name, !position, !description)) {
       return res.status(400).json({ message: "All fields are required" });
     }
-    if (image.length <= 0) {
-      return res.status(400).json({ message: "Image upload failed" });
-    }
     var images = [];
+    if (image) {
+      if (image.length <= 0) {
+        return res.status(400).json({ message: "Image upload failed" });
+      }
 
-    req.files.image.forEach((img) => {
-      images.push(img.filename);
-    });
+      req.files.image.forEach((img) => {
+        images.push(img.filename);
+      });
+    }
 
     const newTeam = await Team.create({
       name,
       position,
       description,
       image: images,
-      status
+      status,
     });
     res
       .status(201)
@@ -68,14 +69,14 @@ exports.getAllTeam = async (req, res) => {
 exports.updateTeam = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, position, description,status } = req.body || {};
+    const { name, position, description, status } = req.body || {};
     const team = await Team.findById(id);
     if (!team) {
       return res.status(404).json({ message: "Team not found" });
     }
 
     let images = [...team.image];
-    var toRemove = req.body?.removedImage
+    var toRemove = req.body?.removedImage;
 
     if (toRemove && !Array.isArray(toRemove)) {
       toRemove = ["None/none", toRemove];
@@ -85,17 +86,15 @@ exports.updateTeam = async (req, res) => {
       await Promise.all(
         toRemove.map(async (pid) => {
           cloudinary.uploader.destroy(pid);
-        })
+        }),
       );
       images = images.filter((img) => !toRemove.includes(img));
     }
 
-
-    if(req.files && req.files.image){
-      const updatedImages = req.files.image.map((file)=>file.filename)
-      images = [...images,...updatedImages]
+    if (req.files && req.files.image) {
+      const updatedImages = req.files.image.map((file) => file.filename);
+      images = [...images, ...updatedImages];
     }
-    
 
     team.name = name ?? team.name;
     team.description = description ?? team.description;
@@ -130,12 +129,12 @@ exports.deleteTeam = async (req, res) => {
     //   fs.remove(imagePath);
     // });
 
-     if (team.image && team.image.length > 0) {
-          for (const image of team.image) {
-            const pid = image.split(".")[0];
-            const res = await cloudinary.uploader.destroy(pid);
-          }
-        }
+    if (team.image && team.image.length > 0) {
+      for (const image of team.image) {
+        const pid = image.split(".")[0];
+        const res = await cloudinary.uploader.destroy(pid);
+      }
+    }
 
     await Team.findByIdAndDelete(id);
     res.status(200).json({ message: "Team deleted successfully" });

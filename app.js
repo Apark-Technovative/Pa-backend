@@ -9,6 +9,7 @@ var corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
       "http://localhost:5173", // Local frontend
+      "http://localhost:5174", // Local frontend
       "http://localhost:5175", // Local frontend
     ];
 

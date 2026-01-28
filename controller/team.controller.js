@@ -9,11 +9,12 @@ exports.addTeam = async (req, res) => {
     const image = req.files;
     console.log(image);
 
+    
     if ((!name, !position, !description)) {
       return res.status(400).json({ message: "All fields are required" });
     }
     var images = [];
-    if (image) {
+    if (image.length > 0) {
       if (image.length <= 0) {
         return res.status(400).json({ message: "Image upload failed" });
       }

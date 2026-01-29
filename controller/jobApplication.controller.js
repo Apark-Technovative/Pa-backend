@@ -82,7 +82,7 @@ exports.applyForJob = async (req, res) => {
       }).save();
       res.status(201).json({
         message: "Job application submitted successfully",
-        data: { ...newApplication._doc, userMailInfo, adminMailInfo },
+        data: { userMailInfo, adminMailInfo },
       });
     } else {
       res.status(500).json({

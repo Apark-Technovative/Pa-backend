@@ -20,6 +20,6 @@ const careerSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please enter deadline"],
   },
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model("Career", careerSchema);

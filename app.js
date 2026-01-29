@@ -37,7 +37,7 @@ const contactRouter = require("./router/contactRouter/contact.router");
 const careerRouter = require("./router/CareerRouter/career.router");
 const quoteRouter = require("./router/quoteRouter/quote.router");
 const teamRouter = require("./router/teamRouter/team.router");
-
+const jobApplicationRouter = require("./router/jobApplicationRouter/jobApplication.router");
 app.use(
   "/",
   authRouter,
@@ -46,7 +46,8 @@ app.use(
   contactRouter,
   careerRouter,
   quoteRouter,
-  teamRouter
+  teamRouter,
+  jobApplicationRouter
 );
 
 module.exports = app;

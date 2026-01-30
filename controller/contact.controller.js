@@ -1,4 +1,5 @@
 const Contact = require("../model/contact.model");
+const ApiFeatures = require("../utils/apiFeatures");
 const emailTransporter = require("../utils/emailTransporter");
 exports.createContact = async (req, res) => {
   try {
@@ -44,9 +45,14 @@ exports.createContact = async (req, res) => {
 
 exports.getAllContact = async (req, res) => {
   try {
-    const contacts = await Contact.find().sort({ createdAt: -1 });
-    const contactCount = await Contact.countDocuments();
+     const apiFeatures = new ApiFeatures(Contact.find(), req.query)
+      .search(["name", "email"])
+      .filter()
+      .sort()
+      .pagination();
 
+    const contacts = await apiFeatures.query;
+    const contactCount = await Contact.countDocuments();
     res.status(200).json({
       message: "Contacts retrieved sucessfully",
       data: contacts,

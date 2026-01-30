@@ -8,13 +8,13 @@ exports.getServices = async (req, res) => {
   try {
     // const services = await Service.find();
     const apiFeatures = new ApiFeatures(Service.find(), req.query)
+      .search(["title"])
       .filter()
       .sort()
       .pagination();
 
-
     const services = await apiFeatures.query;
-    console.log("services", services);
+
     const count = services.length;
     res.status(200).json({
       message: "Services fetched successfully",

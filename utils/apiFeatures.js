@@ -14,9 +14,10 @@ class ApiFeatures {
       this.query = this.query.find({
         $or: fields.map((field) => ({ [field]: regex })),
       });
-      return this;
     }
+    return this;
   }
+
   filter() {
     const queryObj = { ...this.queryStr };
     const excludedFields = ["page", "sort", "limit", "keyword", "order"];
@@ -39,11 +40,11 @@ class ApiFeatures {
 
       this.query = this.query.sort(sortBy);
     } else {
-        this.query = this.query.sort("-createdAt");
+      this.query = this.query.sort("-createdAt");
     }
     return this;
   }
-  pagination(){
+  pagination() {
     const page = Number(this.queryStr.page) || 1;
     const limit = Number(this.queryStr.limit) || 10;
     const skip = (page - 1) * limit;

@@ -7,7 +7,8 @@ const {
   logoutAdmin,
   changeMyPassword,
   changePassword,
-  getAdmins
+  getAdmins,
+  deleteAdmin,
 } = require("../../controller/auth.controller");
 const { isAuthenticated } = require("../../middleware/isAuthenticated");
 
@@ -16,6 +17,7 @@ const router = express.Router();
 router.route("/login").post(loginAdmin);
 router.route("/getAdmin").get(isAuthenticated, getAdmin);
 router.route("/getAllAdmin").get(isAuthenticated, getAdmins);
+router.route("/deleteAdmin/:id").delete(isAuthenticated, deleteAdmin);
 
 router.route("/register").post(isAuthenticated, createAdmin);
 router.route("/registerSuperAdmin").post(createAdmin);

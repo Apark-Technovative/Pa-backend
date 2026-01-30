@@ -2,6 +2,7 @@ const Team = require("../model/team.model");
 const fs = require("fs-extra");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("../config/cloudinaryConfig");
+const ApiFeatures = require("../utils/apiFeatures");
 
 exports.addTeam = async (req, res) => {
   try {
@@ -58,12 +59,19 @@ exports.getTeam = async (req, res) => {
 
 exports.getAllTeam = async (req, res) => {
   try {
-    const team = await Team.find();
-    res.status(200).json({ message: "Team fetched successfully", data: team });
+    const apiFeatures = new ApiFeatures(Team.find(), req.query)
+      .search(["name", "position"])
+      .filter()
+      .sort()
+      .pagination();
+
+    const teams = await apiFeatures.query;
+    const teamCount = await Team.countDocuments();
+    res.status(200).json({ message: "Team fetched successfully", data: teams, count: teamCount });
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Error adding team", error: error.message });
+      .json({ message: "Error fetching team", error: error.message });
   }
 };
 

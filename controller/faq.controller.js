@@ -1,4 +1,5 @@
 const Faq = require("../model/faq.model");
+const ApiFeatures = require("../utils/apiFeatures");
 
 exports.createFaq = async (req, res) => {
   try {
@@ -21,7 +22,13 @@ exports.createFaq = async (req, res) => {
 
 exports.getFaqs = async (req, res) => {
   try {
-    const faqs = await Faq.find().sort({ createdAt: -1 });
+     const apiFeatures = new ApiFeatures(Faq.find(), req.query)
+      .search(["question"])
+      .filter()
+      .sort()
+      .pagination();
+
+    const faqs = await apiFeatures.query;
     const faqCount = await Faq.countDocuments();
     res.status(200).json({
       message: "FAQs retrieved successfully",

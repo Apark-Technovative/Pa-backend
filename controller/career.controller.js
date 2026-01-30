@@ -1,4 +1,5 @@
 const Career = require("../model/career.model");
+const ApiFeatures = require("../utils/apiFeatures");
 exports.createCareer = async (req, res) => {
   try {
     const { title, position, experienceRequired, description, deadline } =
@@ -30,7 +31,14 @@ exports.createCareer = async (req, res) => {
 
 exports.getCareer = async (req, res) => {
   try {
-    const careers = await Career.find().sort({ createdAt: -1 });
+
+     const apiFeatures = new ApiFeatures(Career.find(), req.query)
+      .search(["title"])
+      .filter()
+      .sort()
+      .pagination();
+
+    const careers = await apiFeatures.query;
     const careerCount = await Career.countDocuments();
     res.status(200).json({
       message: "Career retrieved successfully",

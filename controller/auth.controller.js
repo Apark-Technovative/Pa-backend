@@ -1,4 +1,5 @@
 const Admin = require("../model/admin.model");
+const ApiFeatures = require("../utils/apiFeatures");
 const { sendToken } = require("../utils/jwtToken");
 
 exports.createAdmin = async (req, res) => {
@@ -47,20 +48,55 @@ exports.getAdmin = async (req, res) => {
 
 exports.getAdmins = async (req, res) => {
   try {
-    var admins = await Admin.find();
-    admins = admins.filter((admin) => admin.role !== "superAdmin");
+    const apiFeatures = new ApiFeatures(Admin.find(), req.query)
+      .search(["name", "email", "role"])
+      .filter()
+      .sort()
+      .pagination();
+
+    const admins = await apiFeatures.query;
+    const adminCount = await Admin.countDocuments();
+    var filteredAdmins = [];
+    if (req.admin.role !== "superAdmin") {
+      filteredAdmins = admins.filter((admin) => admin.role !== "superAdmin");
+    } else {
+      filteredAdmins = admins;
+    }
     res.status(200).json({
-      message: "Admins retrived",
-      data: admins,
+      message: "Admins retrieved",
+      data: filteredAdmins,
+      count: adminCount,
     });
-  }
-  catch (error) {
+  } catch (error) {
     res
       .status(500)
       .json({ message: "Error getting admins", error: error.message });
   }
 };
 
+exports.deleteAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if(id === req.admin.id){
+      return  res.status(400).json({ message: "You cannot delete yourself" });
+    }
+    if (req.admin.role !== "superAdmin") {
+      return res
+        .status(403)
+        .json({ message: "Only superAdmin can delete an admin" });
+    }
+    const deletedAdmin = await Admin.findByIdAndDelete(id);
+    if (!deletedAdmin) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+    res.status(200).json({ message: "Admin deleted successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error deleting admin", error: error.message });
+  }
+};
 exports.loginAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;

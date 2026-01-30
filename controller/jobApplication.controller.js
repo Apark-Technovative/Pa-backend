@@ -1,4 +1,5 @@
 const Job = require("../model/jobApplication.model");
+const ApiFeatures = require("../utils/apiFeatures");
 const emailTransporter = require("../utils/emailTransporter");
 const fs = require("fs-extra");
 const path = require("path");
@@ -21,6 +22,7 @@ exports.applyForJob = async (req, res) => {
     );
 
     const resumeFile = req.files?.resume?.[0];
+
 
     if (
       !fullName ||
@@ -77,7 +79,7 @@ exports.applyForJob = async (req, res) => {
         address,
         positionApplied,
         postId,
-        resume: resumeFile.filename,
+        resume: resumeFile.path,
         coverLetter,
       }).save();
       res.status(201).json({
@@ -98,7 +100,13 @@ exports.applyForJob = async (req, res) => {
 
 exports.getJobApplications = async (req, res) => {
   try {
-    const applications = await Job.find();
+     const apiFeatures = new ApiFeatures(Job.find(), req.query)
+      .search(["fullName", "email", "positionApplied"])
+      .filter()
+      .sort()
+      .pagination();
+
+    const applications = await apiFeatures.query;
     const applicationCount = await Job.countDocuments();
     res.status(200).json({
       message: "Job applications retrieved successfully",

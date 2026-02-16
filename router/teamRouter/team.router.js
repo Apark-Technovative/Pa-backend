@@ -22,7 +22,7 @@ router.route("/team").post(
   addTeam
 );
 router.route("/team").get(isAuthenticated, getAllTeam);
-router.route("/team").get(getAllTeam);
+router.route("/getAllteam").get(getAllTeam);
 router.route("/team/:id").get(isAuthenticated, getTeam);
 router.route("/team/:id").patch(
   isAuthenticated,

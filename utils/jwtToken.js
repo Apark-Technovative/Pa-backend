@@ -9,7 +9,7 @@ const sendToken = async (admin, statusCode, message, res, req) => {
     const cookieOptions = {
       httpOnly: true,
       secure: process.env.Node_ENV === "PRODUCTION" ? true : false,
-      sameSite: "Strict",
+      sameSite: "None",
       maxAge: parseInt(process.env.JWT_EXPIRES_TIME),
     };
 

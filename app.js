@@ -11,6 +11,8 @@ var corsOptions = {
       "https://paapi.mycomputershop.com.np", // Local frontend
       "https://admin.paengineering.com.np", // Local frontend
       "https://paengineering.com.np", // Local frontend
+      "http://lcoalhost:5173", // Local frontend
+      "http://lcoalhost:5174", // Local frontend
     ];
 
     if (!origin || allowedOrigins.includes(origin)) {

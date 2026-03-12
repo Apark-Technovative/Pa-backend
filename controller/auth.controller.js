@@ -135,9 +135,10 @@ exports.loginAdmin = async (req, res) => {
 
 exports.logoutAdmin = async (req, res) => {
   try {
-    res.cookie(process.env.TOKEN_NAME, null, {
-      expires: new Date(Date.now()),
+    res.clearCookie(process.env.TOKEN_NAME, {
       httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "None",
     });
     res.status(200).json({ message: "Admin logged out successfully" });
   } catch (error) {

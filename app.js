@@ -9,6 +9,7 @@ var corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
       "https://paapi.mycomputershop.com.np", // Local frontend
+      "https://paengineering.com.np/", // Local frontend
     ];
 
     if (!origin || allowedOrigins.includes(origin)) {

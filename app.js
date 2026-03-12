@@ -8,9 +8,7 @@ var corsOptions = {
   // origin: true,
   origin: function (origin, callback) {
     const allowedOrigins = [
-      "http://localhost:5173", // Local frontend
-      "http://localhost:5174", // Local frontend
-      "http://localhost:5175", // Local frontend
+      "https://paapi.mycomputershop.com.np", // Local frontend
     ];
 
     if (!origin || allowedOrigins.includes(origin)) {
@@ -47,7 +45,7 @@ app.use(
   careerRouter,
   quoteRouter,
   teamRouter,
-  jobApplicationRouter
+  jobApplicationRouter,
 );
 
 module.exports = app;

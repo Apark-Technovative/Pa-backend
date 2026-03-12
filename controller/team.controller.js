@@ -1,6 +1,4 @@
 const Team = require("../model/team.model");
-const fs = require("fs-extra");
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("../config/cloudinaryConfig");
 const ApiFeatures = require("../utils/apiFeatures");
 
